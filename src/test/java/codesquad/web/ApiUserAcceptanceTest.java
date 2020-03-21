@@ -3,9 +3,12 @@ package codesquad.web;
 import codesquad.domain.User;
 import codesquad.dto.UserDto;
 import org.junit.Test;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import support.test.AcceptanceTest;
+import support.test.HtmlFormDataBuilder;
 
 public class ApiUserAcceptanceTest extends AcceptanceTest {
 
@@ -54,5 +57,15 @@ public class ApiUserAcceptanceTest extends AcceptanceTest {
 
         UserDto dbUser = getResource(location, UserDto.class, findByUserId(newUser.getUserId()));
         softly.assertThat(dbUser).isEqualTo(newUser);
+    }
+
+    @Test
+    public void login() {
+        UserDto userDto = new UserDto("javajigi", "123456", "name");
+
+        ResponseEntity<Void> response = template.postForEntity("/api/users/login", userDto, Void.class);
+
+        softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+        softly.assertThat(response.getHeaders().getLocation().getPath()).isEqualTo("/");
     }
 }
