@@ -36,7 +36,6 @@ public class UserController {
 
     @GetMapping("/{id}/form")
     public String updateForm(@LoginUser User loginUser, @PathVariable long id, Model model) {
-        log.debug("LoginUser : {}", loginUser);
         model.addAttribute("user", userService.findById(loginUser, id));
         return "/user/updateForm";
     }
@@ -53,16 +52,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(HttpSession session, UserDto userDto) {
+    public String login(HttpSession session, UserDto userDto, Model model) {
         try {
             User loginUser = userService.login(userDto.getUserId(), userDto.getPassword());
             session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, loginUser);
             log.debug("LoginUser : {}", loginUser);
         } catch (UnAuthenticationException e) {
-            e.printStackTrace();
-            return "redirect:/users/login";
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/user/login";
         }
 
+        return "redirect:/";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
         return "redirect:/";
     }
 }

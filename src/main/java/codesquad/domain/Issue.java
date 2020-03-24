@@ -1,10 +1,10 @@
 package codesquad.domain;
 
+import codesquad.UnAuthorizedException;
+import codesquad.dto.IssueDto;
 import support.domain.AbstractEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -18,12 +18,19 @@ public class Issue extends AbstractEntity {
     @Column(nullable = false)
     private String comment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User writer;
+
+    private boolean deleted = false;
+
     public Issue() {
     }
 
-    public Issue(String subject, String comment) {
+    public Issue(String subject, String comment, User writer) {
         this.subject = subject;
         this.comment = comment;
+        this.writer = writer;
     }
 
     public String getSubject() {
@@ -32,5 +39,44 @@ public class Issue extends AbstractEntity {
 
     public String getComment() {
         return comment;
+    }
+
+    public User getWriter() {
+        return writer;
+    }
+
+    public IssueDto _toIssueDto() {
+        return new IssueDto(this.subject, this.comment, this.writer);
+    }
+
+    public boolean isWriter(User loginUser) {
+        return writer.equals(loginUser);
+    }
+
+    public void update(User loginUser, IssueDto target) {
+        if(!isWriter(loginUser)) {
+            throw new UnAuthorizedException();
+        }
+
+        this.subject = target.getSubject();
+        this.comment = target.getComment();
+    }
+
+    public void delete() {
+        this.deleted = true;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "Issue{" +
+                "subject='" + subject + '\'' +
+                ", comment='" + comment + '\'' +
+                ", writer=" + writer +
+                ", deleted=" + deleted +
+                '}';
     }
 }

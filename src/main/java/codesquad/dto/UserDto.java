@@ -3,8 +3,12 @@ package codesquad.dto;
 import codesquad.domain.User;
 
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 public class UserDto {
+
+    private Long id = 0L;
+
     @Size(min = 3, max = 20)
     private String userId;
 
@@ -18,10 +22,22 @@ public class UserDto {
     }
 
     public UserDto(String userId, String password, String name) {
-        super();
+        this(0L, userId, password, name);
+    }
+
+    public UserDto(Long id, String userId, String password, String name) {
+        this.id = id;
         this.userId = userId;
         this.password = password;
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserId() {
@@ -49,48 +65,27 @@ public class UserDto {
     }
 
     public User _toUser() {
-        return new User(this.userId, this.password, this.name);
+        return new User(id, this.userId, this.password, this.name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(getId(), userDto.getId()) &&
+                Objects.equals(getUserId(), userDto.getUserId()) &&
+                Objects.equals(getPassword(), userDto.getPassword()) &&
+                Objects.equals(getName(), userDto.getName());
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((userId == null) ? 0 : userId.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        UserDto other = (UserDto) obj;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (userId == null) {
-            if (other.userId != null)
-                return false;
-        } else if (!userId.equals(other.userId))
-            return false;
-        return true;
+        return Objects.hash(getId(), getUserId(), getPassword(), getName());
     }
 
     @Override
     public String toString() {
-        return "UserDto [userId=" + userId + ", password=" + password + ", name=" + name + "]";
+        return "UserDto [id=" + id + ", userId=" + userId + ", password=" + password + ", name=" + name + "]";
     }
 }
