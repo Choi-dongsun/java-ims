@@ -72,12 +72,8 @@ public class User extends AbstractEntity {
     }
 
     public void update(User loginUser, User target) {
-        if (!matchUserId(loginUser.getUserId())) {
+        if (!matchUserId(loginUser.getUserId()) || !matchPassword(target.getPassword())) {
             throw new UnAuthorizedException();
-        }
-
-        if (!matchPassword(target.getPassword())) {
-            return;
         }
 
         this.name = target.name;
@@ -88,7 +84,7 @@ public class User extends AbstractEntity {
     }
 
     public UserDto _toUserDto() {
-        return new UserDto(this.userId, this.password, this.name);
+        return new UserDto(super.getId(), this.userId, this.password, this.name);
     }
 
     @JsonIgnore
@@ -105,6 +101,6 @@ public class User extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", password=" + password + ", name=" + name + "]";
+        return "User [id=" +super.getId() + ", userId=" + userId + ", password=" + password + ", name=" + name + "]";
     }
 }

@@ -1,13 +1,12 @@
 package codesquad.web;
 
+import codesquad.domain.User;
 import codesquad.dto.IssueDto;
+import codesquad.security.LoginUser;
 import codesquad.service.IssueService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/issues")
@@ -20,13 +19,13 @@ public class IssueController {
     }
 
     @GetMapping("/form")
-    public String createForm() {
+    public String createForm(@LoginUser User loginUser) {
         return "/issue/form";
     }
 
     @PostMapping("")
-    public String create(IssueDto issueDto) {
-        issueService.add(issueDto);
+    public String create(@LoginUser User loginUser, IssueDto issueDto) {
+        issueService.add(loginUser, issueDto);
         return "redirect:/";
     }
 
@@ -38,7 +37,25 @@ public class IssueController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
-        model.addAttribute("issue", issueService.findById(id));
+        model.addAttribute("issue", issueService.findById(id)._toIssueDto());
         return "/issue/show";
+    }
+
+    @GetMapping("/{id}/form")
+    public String updateForm(@LoginUser User loginUser, @PathVariable Long id, Model model) {
+        model.addAttribute("issue", issueService.findById(loginUser, id)._toIssueDto());
+        return "/issue/updateForm";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@LoginUser User loginUser, @PathVariable Long id, IssueDto target) {
+        issueService.update(loginUser, id, target);
+        return "redirect:/issues/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@LoginUser User loginUser, @PathVariable Long id) {
+        issueService.delete(loginUser, id);
+        return "redirect:/";
     }
 }
