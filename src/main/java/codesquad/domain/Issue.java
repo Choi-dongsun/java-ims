@@ -19,8 +19,20 @@ public class Issue extends AbstractEntity {
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "writer_id")
     private User writer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "milestone_id")
+    private Milestone milestone;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "label_id")
+    private Label label;
 
     private boolean deleted = false;
 
@@ -31,6 +43,11 @@ public class Issue extends AbstractEntity {
         this.subject = subject;
         this.comment = comment;
         this.writer = writer;
+    }
+
+    public Issue(String subject, String comment, User writer, Milestone milestone) {
+        this(subject, comment, writer);
+        this.milestone = milestone;
     }
 
     public String getSubject() {
@@ -45,8 +62,16 @@ public class Issue extends AbstractEntity {
         return writer;
     }
 
+    public Milestone getMilestone() {
+        return milestone;
+    }
+
+    public User getAssignee() {
+        return assignee;
+    }
+
     public IssueDto _toIssueDto() {
-        return new IssueDto(this.subject, this.comment, this.writer);
+        return new IssueDto(this.subject, this.comment, this.writer, this.milestone);
     }
 
     public boolean isWriter(User loginUser) {
@@ -68,6 +93,18 @@ public class Issue extends AbstractEntity {
 
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public void decideMilestone(Milestone milestone) {
+        this.milestone = milestone;
+    }
+
+    public void decideAssignee(User user) {
+        this.assignee = user;
+    }
+
+    public void decideLabel(Label label) {
+        this.label = label;
     }
 
     @Override

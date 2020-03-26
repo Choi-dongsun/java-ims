@@ -4,6 +4,9 @@ import codesquad.domain.User;
 import codesquad.dto.IssueDto;
 import codesquad.security.LoginUser;
 import codesquad.service.IssueService;
+import codesquad.service.LabelService;
+import codesquad.service.MilestoneService;
+import codesquad.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class IssueController {
 
     private final IssueService issueService;
+    private final MilestoneService milestoneService;
+    private final UserService userService;
+    private final LabelService labelService;
 
-    public IssueController(IssueService issueService) {
+    public IssueController(IssueService issueService, MilestoneService milestoneService,
+                           UserService userService, LabelService labelService) {
         this.issueService = issueService;
+        this.milestoneService = milestoneService;
+        this.userService = userService;
+        this.labelService = labelService;
     }
 
     @GetMapping("/form")
@@ -23,13 +33,13 @@ public class IssueController {
         return "/issue/form";
     }
 
-    @PostMapping("")
+    @PostMapping
     public String create(@LoginUser User loginUser, IssueDto issueDto) {
         issueService.add(loginUser, issueDto);
         return "redirect:/";
     }
 
-    @GetMapping("")
+    @GetMapping
     public String list(Model model) {
         model.addAttribute("issues", issueService.findAll());
         return  "/index";
@@ -38,6 +48,9 @@ public class IssueController {
     @GetMapping("/{id}")
     public String show(@PathVariable Long id, Model model) {
         model.addAttribute("issue", issueService.findById(id)._toIssueDto());
+        model.addAttribute("milestones", milestoneService.findAll());
+        model.addAttribute("users", userService.findAll());
+        model.addAttribute("labels", labelService.findAll());
         return "/issue/show";
     }
 
@@ -50,12 +63,30 @@ public class IssueController {
     @PutMapping("/{id}")
     public String update(@LoginUser User loginUser, @PathVariable Long id, IssueDto target) {
         issueService.update(loginUser, id, target);
-        return "redirect:/issues/" + id;
+        return "redirect:/issues/{id}";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@LoginUser User loginUser, @PathVariable Long id) {
         issueService.delete(loginUser, id);
         return "redirect:/";
+    }
+
+    @GetMapping("/{issueId}/milestones/{milestoneId}")
+    public String decideMilestone(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long milestoneId) {
+        issueService.decideMilestone(loginUser, issueId, milestoneId);
+        return "redirect:/issues/{issueId}";
+    }
+
+    @GetMapping("/{issueId}/assignees/{assigneeId}")
+    public String decideAssignee(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long assigneeId) {
+        issueService.decideAssignee(loginUser, issueId, assigneeId);
+        return "redirect:/issues/{issueId}";
+    }
+
+    @GetMapping("/{issueId}/labels/{labelId}")
+    public String decideLabel(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long labelId) {
+        issueService.decideLabel(loginUser, issueId, labelId);
+        return "redirect:/issues/{issueId}";
     }
 }

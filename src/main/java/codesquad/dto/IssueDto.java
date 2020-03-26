@@ -1,9 +1,11 @@
 package codesquad.dto;
 
 import codesquad.domain.Issue;
+import codesquad.domain.Milestone;
 import codesquad.domain.User;
 
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 public class IssueDto {
     @Size(min = 3, max = 100)
@@ -14,13 +16,18 @@ public class IssueDto {
 
     private UserDto writer;
 
+    private MilestoneDto milestone;
+
     public IssueDto() {
     }
 
-    public IssueDto(String subject, String comment, User writer) {
+    public IssueDto(String subject, String comment, User writer, Milestone milestone) {
         this.subject = subject;
         this.comment = comment;
         this.writer = writer._toUserDto();
+        if(milestone != null) {
+            this.milestone = milestone._toMilestoneDto();
+        }
     }
 
     public String getSubject() {
@@ -47,7 +54,18 @@ public class IssueDto {
         this.writer = writer;
     }
 
+    public MilestoneDto getMilestone() {
+        return milestone;
+    }
+
+    public void setMilestone(MilestoneDto milestone) {
+        this.milestone = milestone;
+    }
+
     public Issue _toIssue() {
-        return new Issue(subject, comment, writer._toUser());
+        if(milestone == null) {
+            return new Issue(subject, comment, writer._toUser(), null);
+        }
+        return new Issue(subject, comment, writer._toUser(), milestone._toMilestone() );
     };
 }

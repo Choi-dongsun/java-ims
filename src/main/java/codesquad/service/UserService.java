@@ -2,6 +2,7 @@ package codesquad.service;
 
 import codesquad.UnAuthenticationException;
 import codesquad.UnAuthorizedException;
+import codesquad.domain.Milestone;
 import codesquad.domain.User;
 import codesquad.domain.UserRepository;
 import codesquad.dto.UserDto;
@@ -9,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,14 +33,22 @@ public class UserService {
         original.update(loginUser, updatedUser._toUser());
     }
 
+    public User findById(long id) {
+        return userRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
     public User findById(User loginUser, long id) {
         return userRepository.findById(id)
                 .filter(user -> user.equals(loginUser))
                 .orElseThrow(UnAuthorizedException::new);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDto> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(User::_toUserDto)
+                .collect(Collectors.toList());
     }
 
     public User login(String userId, String password) throws UnAuthenticationException {
