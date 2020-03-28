@@ -20,6 +20,13 @@ public class Label extends AbstractEntity {
     }
 
     public LabelDto _toLabelDto() {
-        return new LabelDto(this.subject);
+        return new LabelDto(super.getId(), this.subject);
+    }
+
+    @Override
+    public String toString() {
+        return "Label{" +
+                "subject='" + subject + '\'' +
+                '}';
     }
 }

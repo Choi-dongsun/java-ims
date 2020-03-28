@@ -5,9 +5,11 @@ import codesquad.domain.Milestone;
 import codesquad.domain.User;
 
 import javax.validation.constraints.Size;
-import java.util.Objects;
 
 public class IssueDto {
+
+    private Long id;
+
     @Size(min = 3, max = 100)
     private String subject;
 
@@ -28,6 +30,11 @@ public class IssueDto {
         if(milestone != null) {
             this.milestone = milestone._toMilestoneDto();
         }
+    }
+
+    public IssueDto(Long id, String subject, String comment, User writer, Milestone milestone) {
+        this(subject, comment, writer, milestone);
+        this.id = id;
     }
 
     public String getSubject() {
@@ -62,10 +69,18 @@ public class IssueDto {
         this.milestone = milestone;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Issue _toIssue() {
         if(milestone == null) {
-            return new Issue(subject, comment, writer._toUser(), null);
+            return new Issue(id, subject, comment, writer._toUser(), null);
         }
-        return new Issue(subject, comment, writer._toUser(), milestone._toMilestone() );
+        return new Issue(id, subject, comment, writer._toUser(), milestone._toMilestone() );
     };
 }

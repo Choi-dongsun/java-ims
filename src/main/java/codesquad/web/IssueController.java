@@ -3,10 +3,7 @@ package codesquad.web;
 import codesquad.domain.User;
 import codesquad.dto.IssueDto;
 import codesquad.security.LoginUser;
-import codesquad.service.IssueService;
-import codesquad.service.LabelService;
-import codesquad.service.MilestoneService;
-import codesquad.service.UserService;
+import codesquad.service.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,13 +16,15 @@ public class IssueController {
     private final MilestoneService milestoneService;
     private final UserService userService;
     private final LabelService labelService;
+    private final CommentService commentService;
 
     public IssueController(IssueService issueService, MilestoneService milestoneService,
-                           UserService userService, LabelService labelService) {
+                           UserService userService, LabelService labelService, CommentService commentService) {
         this.issueService = issueService;
         this.milestoneService = milestoneService;
         this.userService = userService;
         this.labelService = labelService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/form")
@@ -51,6 +50,7 @@ public class IssueController {
         model.addAttribute("milestones", milestoneService.findAll());
         model.addAttribute("users", userService.findAll());
         model.addAttribute("labels", labelService.findAll());
+        model.addAttribute("comments", commentService.findAllByIssue(id));
         return "/issue/show";
     }
 
@@ -70,23 +70,5 @@ public class IssueController {
     public String delete(@LoginUser User loginUser, @PathVariable Long id) {
         issueService.delete(loginUser, id);
         return "redirect:/";
-    }
-
-    @GetMapping("/{issueId}/milestones/{milestoneId}")
-    public String decideMilestone(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long milestoneId) {
-        issueService.decideMilestone(loginUser, issueId, milestoneId);
-        return "redirect:/issues/{issueId}";
-    }
-
-    @GetMapping("/{issueId}/assignees/{assigneeId}")
-    public String decideAssignee(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long assigneeId) {
-        issueService.decideAssignee(loginUser, issueId, assigneeId);
-        return "redirect:/issues/{issueId}";
-    }
-
-    @GetMapping("/{issueId}/labels/{labelId}")
-    public String decideLabel(@LoginUser User loginUser, @PathVariable Long issueId, @PathVariable Long labelId) {
-        issueService.decideLabel(loginUser, issueId, labelId);
-        return "redirect:/issues/{issueId}";
     }
 }

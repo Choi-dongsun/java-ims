@@ -51,7 +51,7 @@
                     for="milestone-menu">
                     {{#milestones}}
                     <li class="mdl-menu__item">
-                        <a href="/issues/{{../id}}/milestones/{{id}}">{{subject}}</a>
+                        <a href="/api/issues/{{../id}}/milestones/{{id}}">{{subject}}</a>
                     </li>
                     {{/milestones}}
                 </ul>
@@ -64,7 +64,7 @@
                     for="label-menu">
                     {{#labels}}
                     <li class="mdl-menu__item">
-                        <a href="/issues/{{../id}}/labels/{{id}}">{{subject}}</a>
+                        <a href="/api/issues/{{../id}}/labels/{{id}}">{{subject}}</a>
                     </li>
                     {{/labels}}
                 </ul>
@@ -77,7 +77,7 @@
                     for="assignee-menu">
                     {{#users}}
                     <li class="mdl-menu__item">
-                        <a href="/issues/{{../id}}/assignees/{{id}}">{{name}}</a>
+                        <a href="/api/issues/{{../id}}/assignees/{{id}}">{{name}}</a>
                     </li>
                     {{/users}}
                 </ul>
@@ -86,80 +86,49 @@
                 <p>{{comment}}</p>
             </div>
             <div class="mdl-color-text--primary-contrast mdl-card__supporting-text comments">
-
                 <!-- comments start -->
-
+                {{#comments}}
                 <div class="comment mdl-color-text--grey-700">
                     <header class="comment__header">
                         <img class="comment__avatar2" height="48" width="48"
-                             src="https://avatars2.githubusercontent.com/u/520500?v=3&s=140" alt="javajigi">
+                             src="https://tistory4.daumcdn.net/tistory/3067842/skin/images/my.jpeg" alt="javajigi">
                         <div class="comment__author">
                             <strong>
-                                <a>javajigi</a>
-
-
-                                <span>changed milestone 1 on 2017-01-14</span>
-
-
+                                <a>{{writer.userId}}</a>
+                                <span>{{content}} ({{createdDate}}) </span>
                             </strong>
                         </div>
+                        <span>
+                            <form action="/api/issues/{{issue.id}}/comments/{{id}}" class="comment-edit" method="get">
+                                <button type="submit" class="nostylebutton">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                            </form>
+                        </span>
+                        <span>
+                            <form action="/api/issues/{{issue.id}}/comments/{{id}}" class="comment-delete" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="nostylebutton">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </form>
+                        </span>
                     </header>
                 </div>
-                <hr>
-
-
-                <div class="comment mdl-color-text--grey-700">
-                    <header class="comment__header">
-                        <img class="comment__avatar2" height="48" width="48"
-                             src="https://avatars1.githubusercontent.com/u/7744966?v=3&u=1bd7d2e72800c0d5a1a5a2e04da851d30b3c13c7&s=140"
-                             alt="cca-company">
-                        <div class="comment__author">
-                            <strong>
-                                <a>cca-company</a>
-
-
-                                <span>comment new issue! on 2017-01-14</span>
-
-
-                            </strong>
-                        </div>
-                    </header>
-                </div>
-                <hr>
-
-
-                <div class="comment mdl-color-text--grey-700">
-                    <header class="comment__header">
-                        <img class="comment__avatar2" height="48" width="48"
-                             src="https://avatars3.githubusercontent.com/u/14341811?v=3&s=400" alt="진저애비">
-                        <div class="comment__author">
-                            <strong>
-                                <a>진저애비</a>
-
-
-                                upload file <a href="upload file" target="_blank">[view]</a>
-
-
-                            </strong>
-                        </div>
-                    </header>
-                </div>
-                <hr>
-
-
+                {{/comments}}
                 <!-- comments end -->
             </div>
-            <form action="/templates/issue/1/uploadFile" enctype="multipart/form-data" method="POST">
+            <form action="" enctype="multipart/form-data" method="POST">
                 <div style="margin:10px;">
                     <input type="file" name="file" id="file"/>
                     <button class="mdl-button" type="submit">upload file</button>
                 </div>
             </form>
             <div class="mdl-color-text--primary-contrast mdl-card__supporting-text new-comment">
-                <form action="/templates/issue/1/addComment" method="POST">
+                <form action="/api/issues/{{../id}}/comments/" method="POST" class="comment-add">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <textarea rows=5 class="mdl-textfield__input" id="comment" name="comment"></textarea>
-                        <label for="comment" class="mdl-textfield__label">Leave a comment</label>
+                        <textarea rows=5 class="mdl-textfield__input" id="content" name="content"></textarea>
+                        <label for="content" class="mdl-textfield__label">Leave a comment</label>
                     </div>
                     <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
                         <i class="material-icons" role="presentation">check</i><span class="visuallyhidden">add comment</span>
@@ -169,6 +138,53 @@
         </div>
     </div>
     {{/issue}}
+
+<script type="text/template" id="commentTemplate">
+    <div class="comment mdl-color-text--grey-700">
+        <header class="comment__header">
+            <img class="comment__avatar2" height="48" width="48"
+                 src="https://tistory4.daumcdn.net/tistory/3067842/skin/images/my.jpeg" alt="movingline">
+            <div class="comment__author">
+                <strong>
+                    <a>{0}</a>
+                    <span>{1} ({2})</span>
+                </strong>
+            </div>
+            <span>
+                <form action="/api/issues/{{issue.id}}/comments/{3}" class="comment-edit" method="post">
+                    <input type="hidden" name="_method" value="PUT">
+                    <button type="submit" class="nostylebutton">
+                        <i class="material-icons">edit</i>
+                    </button>
+                </form>
+            </span>
+            <span>
+                <form action="/api/issues/{{issue.id}}/comments/{3}" class="comment-delete" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="nostylebutton">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </form>
+            </span>
+        </header>
+    </div>
+</script>
+
+<script type="text/template" id="commentEditTemplate">
+    <div class="mdl-color-text--primary-contrast mdl-card__supporting-text new-comment">
+        <form action="{0}" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <textarea rows=5 class="mdl-textfield__input" id="edit-content" name="content">{1}</textarea>
+            </div>
+            <button type="submit" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon comment-edit-form">
+                <i class="material-icons" role="presentation">check</i>
+                <span class="visuallyhidden">edit comment</span>
+            </button>
+        </form>
+    </div>
+</script>
+
 {{/partial}}
 
 {{> base}}

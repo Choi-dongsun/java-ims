@@ -3,6 +3,9 @@ package codesquad.service;
 import codesquad.UnAuthorizedException;
 import codesquad.domain.*;
 import codesquad.dto.IssueDto;
+import codesquad.dto.LabelDto;
+import codesquad.dto.MilestoneDto;
+import codesquad.dto.UserDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,21 +64,23 @@ public class IssueService {
     }
 
     @Transactional
-    public void decideMilestone(User loginUser, Long issueId, Long milestoneId) {
+    public MilestoneDto decideMilestone(User loginUser, Long issueId, Long milestoneId) {
         Milestone milestone = milestoneService.findById(milestoneId);
         findById(loginUser, issueId).decideMilestone(milestone);
+        return milestone._toMilestoneDto();
     }
 
     @Transactional
-    public void decideAssignee(User loginUser, Long issueId, Long userId) {
-        User user = userService.findById(userId);
-        findById(loginUser, issueId).decideAssignee(user);
-    }
-
-    @Transactional
-    public void decideLabel(User loginUser, Long issueId, Long labelId) {
+    public LabelDto decideLabel(User loginUser, Long issueId, Long labelId) {
         Label label = labelService.findById(labelId);
         findById(loginUser, issueId).decideLabel(label);
+        return label._toLabelDto();
+    }
 
+    @Transactional
+    public UserDto decideAssignee(User loginUser, Long issueId, Long userId) {
+        User user = userService.findById(userId);
+        findById(loginUser, issueId).decideAssignee(user);
+        return user._toUserDto();
     }
 }
