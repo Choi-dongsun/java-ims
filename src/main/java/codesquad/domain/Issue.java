@@ -6,6 +6,8 @@ import support.domain.AbstractEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Issue extends AbstractEntity {
@@ -50,6 +52,11 @@ public class Issue extends AbstractEntity {
         this.milestone = milestone;
     }
 
+    public Issue(Long id, String subject, String comment, User writer, Milestone milestone) {
+        this(subject, comment, writer, milestone);
+        super.id = id;
+    }
+
     public String getSubject() {
         return subject;
     }
@@ -71,7 +78,7 @@ public class Issue extends AbstractEntity {
     }
 
     public IssueDto _toIssueDto() {
-        return new IssueDto(this.subject, this.comment, this.writer, this.milestone);
+        return new IssueDto(super.getId(), this.subject, this.comment, this.writer, this.milestone);
     }
 
     public boolean isWriter(User loginUser) {
@@ -105,15 +112,5 @@ public class Issue extends AbstractEntity {
 
     public void decideLabel(Label label) {
         this.label = label;
-    }
-
-    @Override
-    public String toString() {
-        return "Issue{" +
-                "subject='" + subject + '\'' +
-                ", comment='" + comment + '\'' +
-                ", writer=" + writer +
-                ", deleted=" + deleted +
-                '}';
     }
 }

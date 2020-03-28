@@ -8,6 +8,7 @@ import support.domain.AbstractEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 public class User extends AbstractEntity {
@@ -97,10 +98,5 @@ public class User extends AbstractEntity {
         public boolean isGuestUser() {
             return true;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "User [id=" +super.getId() + ", userId=" + userId + ", password=" + password + ", name=" + name + "]";
     }
 }

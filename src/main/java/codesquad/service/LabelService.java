@@ -25,6 +25,9 @@ public class LabelService {
     }
 
     public Label findById(Long labelId) {
+        Label label = labelRepository.findById(labelId).orElseThrow(EntityNotFoundException::new);
+        System.out.println("라벨점검" + label);
+
         return labelRepository.findById(labelId).orElseThrow(EntityNotFoundException::new);
     }
 
