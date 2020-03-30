@@ -83,7 +83,11 @@
                 </ul>
             </div>
             <div class="mdl-color-text--grey-700 mdl-card__supporting-text">
-                <p>{{comment}}</p>
+                <p>{{comment}}</p> <br>
+                <p style="font-size: small">
+                    <b>files</b> :
+                    {{#attachments}} <a href="/attachments/{{id}}">{{originName}}</a> {{/attachments}}
+                </p>
             </div>
             <div class="mdl-color-text--primary-contrast mdl-card__supporting-text comments">
                 <!-- comments start -->
@@ -95,7 +99,7 @@
                         <div class="comment__author">
                             <strong>
                                 <a>{{writer.userId}}</a>
-                                <span>{{content}} ({{createdDate}}) </span>
+                                <span>{{content}}</a> ({{createdDate}}) </span>
                             </strong>
                         </div>
                         <span>
@@ -118,7 +122,7 @@
                 {{/comments}}
                 <!-- comments end -->
             </div>
-            <form action="" enctype="multipart/form-data" method="POST">
+            <form action="/issues/{{id}}/attachments" enctype="multipart/form-data" method="POST">
                 <div style="margin:10px;">
                     <input type="file" name="file" id="file"/>
                     <button class="mdl-button" type="submit">upload file</button>
