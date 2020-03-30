@@ -13,5 +13,8 @@ INSERT INTO issue (id, subject, comment, writer_id, deleted, milestone_id, assig
 INSERT INTO issue (id, subject, comment, writer_id, deleted, milestone_id, assignee_id, label_id) values (3, '이슈3 제목입니다', '이슈3 내용입니다', 2, false, 1, null, null);
 
 INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (1, '댓글달았어요1', 1, 1, false, CURRENT_TIMESTAMP(), null);
-INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (2, '삭제된댓글달았어요', 1, 1, true, CURRENT_TIMESTAMP(), null)
-INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (3, '댓글달았어요2', 2, 1, false, CURRENT_TIMESTAMP(), null)
+INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (2, '삭제된댓글달았어요', 1, 1, true, CURRENT_TIMESTAMP(), null);
+INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (3, '댓글달았어요2', 2, 1, false, CURRENT_TIMESTAMP(), null);
+INSERT INTO comment (id, content, user_id, issue_id, deleted, create_date, modified_date) values (4, 'hello.jpg', 1, 1, false, CURRENT_TIMESTAMP(), null);
+
+INSERT INTO attachment (id, origin_name, manage_name, user_id, issue_id, create_date, modified_date) values (1, 'hello.jpg', '111222333444555666777888999111222333hello.jpg', 1, 1, CURRENT_TIMESTAMP(), null);
