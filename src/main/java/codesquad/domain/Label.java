@@ -5,10 +5,12 @@ import support.domain.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Label extends AbstractEntity {
 
+    @NotBlank
     @Column(nullable = false)
     private String subject;
 
