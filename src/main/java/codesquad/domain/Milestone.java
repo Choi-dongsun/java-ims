@@ -5,17 +5,23 @@ import support.domain.AbstractEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
 public class Milestone extends AbstractEntity {
 
+    @NotBlank
     @Column(nullable = false)
     private String subject;
 
+    @NotNull
     @Column(nullable = false)
     private LocalDateTime startDate;
 
+    @NotNull @Future
     @Column(nullable = false)
     private LocalDateTime endDate;
 

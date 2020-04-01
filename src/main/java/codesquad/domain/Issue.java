@@ -5,19 +5,18 @@ import codesquad.dto.IssueDto;
 import support.domain.AbstractEntity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Issue extends AbstractEntity {
-    @Size(min = 3, max = 100)
+    @NotBlank @Size(min = 3, max = 100)
     @Column(nullable = false, length = 100)
     private String subject;
 
-    @Lob
-    @Size(min = 3)
-    @Column(nullable = false)
+    @NotEmpty @Size(min = 3)
+    @Lob @Column(nullable = false)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

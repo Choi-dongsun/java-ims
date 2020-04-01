@@ -7,11 +7,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Attachment extends AbstractEntity{
 
+    @NotEmpty
     private String originName;
+
+    @NotEmpty
     private String manageName;
 
     @ManyToOne(fetch = FetchType.LAZY)
