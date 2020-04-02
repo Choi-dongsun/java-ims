@@ -53,7 +53,9 @@ public class Issue extends AbstractEntity {
 
     public Issue(Long id, String subject, String comment, User writer, Milestone milestone) {
         this(subject, comment, writer, milestone);
-        super.id = id;
+        if(id != null) {
+            super.id = id;
+        }
     }
 
     public String getSubject() {

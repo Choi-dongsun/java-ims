@@ -79,7 +79,7 @@ public class IssueDto {
 
     public Issue _toIssue() {
         if(milestone == null) {
-            return new Issue(id, subject, comment, writer._toUser(), null);
+            return new Issue(id , subject, comment, writer._toUser(), null);
         }
         return new Issue(id, subject, comment, writer._toUser(), milestone._toMilestone() );
     };

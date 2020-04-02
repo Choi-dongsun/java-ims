@@ -79,6 +79,7 @@ public class UserAcceptanceTest extends BasicAuthAcceptanceTest {
     private ResponseEntity<String> update(TestRestTemplate template) throws Exception {
         HttpEntity<MultiValueMap<String, Object>> request = HtmlFormDataBuilder.urlEncodedForm()
                 .addParameter("_method", "put")
+                .addParameter("userId", "javajigi")
                 .addParameter("password", "123456")
                 .addParameter("name", "재성2").build();
 
