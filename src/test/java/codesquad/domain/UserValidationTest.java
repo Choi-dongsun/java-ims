@@ -1,5 +1,6 @@
 package codesquad.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -10,9 +11,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 public class UserValidationTest {
     private static final Logger log = LoggerFactory.getLogger(UserValidationTest.class);
@@ -26,13 +24,61 @@ public class UserValidationTest {
     }
 
     @Test
-    public void userIdWhenIsEmpty() throws Exception {
-        User user = new User("", "password", "name");
-        Set<ConstraintViolation<User>> constraintViolcations = validator.validate(user);
-        assertThat(constraintViolcations.size(), is(1));
+    public void userId_tooShort() {
+        User user = new User("sa", "password" , "name");
 
-        for (ConstraintViolation<User> constraintViolation : constraintViolcations) {
-            log.debug("violation error message : {}", constraintViolation.getMessage());
-        }
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
+    }
+
+    @Test
+    public void userId_tooLong() {
+        User user = new User("123456789012345678901", "password" , "name");
+
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
+    }
+    @Test
+    public void userId_blank() {
+        User user = new User(" ", "password" , "name");
+
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(2);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
+    }
+
+    @Test
+    public void password_too_short() {
+        User user = new User("javajigi", "pass" , "name");
+
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
+    }
+
+    @Test
+    public void password_too_long() {
+        User user = new User("javajigi", "123456789012345678901" , "name");
+
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(1);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
+    }
+
+    @Test
+    public void password_blank() {
+        User user = new User("javajigi", " " , "name");
+
+        Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
+
+        Assertions.assertThat(constraintViolations.size()).isEqualTo(2);
+        constraintViolations.forEach(i -> log.debug(i.getMessage()));
     }
 }
